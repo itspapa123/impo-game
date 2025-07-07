@@ -56,6 +56,7 @@ export default function App() {
     setPair(p);
     setImposterIndex(imposter);
     alert(`Player ${imposter + 1} is the imposter (tell them privately)`);
+
   };
 
   return (
