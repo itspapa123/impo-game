@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -9,7 +8,7 @@ const questionPairs = [
   },
   {
     regular: "Who would wear bright colors?",
-    imposter: "Who would wear dark colors1?",
+    imposter: "Who would wear dark colors?",
   },
   {
     regular: "Who is most likely to survive a zombie apocalypse?",
@@ -69,7 +68,8 @@ export default function ImposterGame() {
 
   const handleReady = () => {
     setIsReady(true);
-    if (players.length >= 3) {
+    const alreadyAssigned = localStorage.getItem("imposter");
+    if (players.length >= 3 && !alreadyAssigned) {
       const pair = questionPairs[Math.floor(Math.random() * questionPairs.length)];
       const imposter = players[Math.floor(Math.random() * players.length)];
       localStorage.setItem("imposter", imposter);
@@ -78,6 +78,13 @@ export default function ImposterGame() {
       setImposterId(imposter);
       setQuestionPair(pair);
     }
+  };
+
+  const handleEndGame = () => {
+    localStorage.removeItem("imposter");
+    localStorage.removeItem("questionPair");
+    localStorage.removeItem(sessionKey);
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -111,6 +118,12 @@ export default function ImposterGame() {
           </p>
         </div>
       )}
+      <button
+        onClick={handleEndGame}
+        style={{ marginTop: 32, backgroundColor: "red", color: "white", padding: 10 }}
+      >
+        End Game
+      </button>
     </div>
   );
 }
