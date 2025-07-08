@@ -48,20 +48,26 @@ const sessionKey = "imposter-game-session";
 
 export default function ImposterGame() {
   const [players, setPlayers] = useState([]);
-  const [userId] = useState(uuidv4());
+  const [userId, setUserId] = useState(() => {
+    const existingId = localStorage.getItem("imposter-user-id");
+    if (existingId) return existingId;
+    const newId = uuidv4();
+    localStorage.setItem("imposter-user-id", newId);
+    return newId;
+  });
   const [isReady, setIsReady] = useState(false);
   const [assigned, setAssigned] = useState(false);
   const [imposterId, setImposterId] = useState(null);
   const [questionPair, setQuestionPair] = useState(null);
 
   useEffect(() => {
-    const existing = JSON.parse(localStorage.getItem(sessionKey)) || [];
-    if (!existing.includes(userId)) {
-      localStorage.setItem(sessionKey, JSON.stringify([...existing, userId]));
+    const storedPlayers = JSON.parse(localStorage.getItem(sessionKey)) || [];
+    if (!storedPlayers.includes(userId)) {
+      localStorage.setItem(sessionKey, JSON.stringify([...storedPlayers, userId]));
     }
     const interval = setInterval(() => {
       const updated = JSON.parse(localStorage.getItem(sessionKey)) || [];
-      setPlayers(updated);
+      setPlayers(Array.from(new Set(updated)));
     }, 1000);
     return () => clearInterval(interval);
   }, [userId]);
@@ -84,6 +90,7 @@ export default function ImposterGame() {
     localStorage.removeItem("imposter");
     localStorage.removeItem("questionPair");
     localStorage.removeItem(sessionKey);
+    localStorage.removeItem("imposter-user-id");
     window.location.reload();
   };
 
