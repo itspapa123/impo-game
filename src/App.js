@@ -9,7 +9,7 @@ const questionPairs = [
   },
   {
     regular: "Who would wear bright colors?",
-    imposter: "Who would wear dark colors?",
+    imposter: "Who would wear dark colors1?",
   },
   {
     regular: "Who is most likely to survive a zombie apocalypse?",
